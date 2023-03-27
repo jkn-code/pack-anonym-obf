@@ -3,22 +3,31 @@
 var JavaScriptObfuscator = require('javascript-obfuscator');
 const fs = require('fs')
 
-const readline = require('readline').createInterface({
-    input: process.stdin,
-    output: process.stdout,
+// const readline = require('readline').createInterface({
+//     input: process.stdin,
+//     output: process.stdout,
+// });
+
+// readline.question(`html-file pack: `, name => {
+//     readline.close();
+//     pack(name)
+// });
+
+let afname = '', atodir = ''
+process.argv.forEach(function (val, index, array) {
+    console.log(index + ': ' + val);
+    if (index == 2 && val != '') afname = val
+    if (index == 3 && val != '') atodir = val
 });
 
-readline.question(`html-file pack: `, name => {
-    readline.close();
-    pack1(name)
-});
+if(afname != '') pack(afname, atodir)
 
 
-function pack1(fname) {
-    let path = ''
+function pack(fname, todir = '') {
+    // let path = ''
     console.log('-PACK-');
 
-    const httx = fs.readFileSync(path + fname, { encoding: 'utf8', flag: 'r' })
+    const httx = fs.readFileSync(fname, { encoding: 'utf8', flag: 'r' })
 
     let mas = httx.split('\n')
     let spack = false
@@ -33,16 +42,16 @@ function pack1(fname) {
             ln = ln.replace("'", '"')
             let mk = ln.split('"')
             console.log(mk[1]);
-            let txts = fs.readFileSync(path + mk[1], { encoding: 'utf8', flag: 'r' })
+            let txts = fs.readFileSync(mk[1], { encoding: 'utf8', flag: 'r' })
             alltx += txts
         } else newHt += lna
     })
-    fs.writeFileSync(path + "index.html", newHt)
+    fs.writeFileSync(todir + "/index.html", newHt)
 
     alltx = '(() => {\n\n' + alltx + '\n\n})()'
     alltx = obf(alltx, 'medium')
 
-    fs.writeFileSync(path + "scripts.js", alltx)
+    fs.writeFileSync(todir + "/scripts.js", alltx)
 
 
 
